@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PokemonBox</string>
+    <string name="SearchBarSearch">Search</string>
 </resources>
