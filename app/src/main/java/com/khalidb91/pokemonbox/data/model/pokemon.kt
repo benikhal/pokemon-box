@@ -1,5 +1,8 @@
 package com.khalidb91.pokemonbox.data.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 data class Ability(
     val id: Int,
     val name: String,
@@ -109,18 +112,23 @@ data class NaturePokeathlonStatAffect(
     val nature: NamedApiResource
 )
 
+@Serializable
 data class Pokemon(
     val id: Int,
     val name: String,
+    @SerialName("base_experience")
     val baseExperience: Int,
     val height: Int,
+    @SerialName("is_default")
     val isDefault: Boolean,
     val order: Int,
     val weight: Int,
     val species: NamedApiResource,
     val abilities: List<PokemonAbility>,
     val forms: List<NamedApiResource>,
+    @SerialName("game_indices")
     val gameIndices: List<VersionGameIndex>,
+    @SerialName("held_items")
     val heldItems: List<PokemonHeldItem>,
     val moves: List<PokemonMove>,
     val stats: List<PokemonStat>,
@@ -128,51 +136,73 @@ data class Pokemon(
     val sprites: PokemonSprites
 )
 
+@Serializable
 data class PokemonSprites(
+    @SerialName("back_default")
     val backDefault: String?,
+    @SerialName("back_shiny")
     val backShiny: String?,
+    @SerialName("front_default")
     val frontDefault: String?,
+    @SerialName("front_shiny")
     val frontShiny: String?,
+    @SerialName("back_female")
     val backFemale: String?,
+    @SerialName("back_shiny_female")
     val backShinyFemale: String?,
+    @SerialName("front_female")
     val frontFemale: String?,
+    @SerialName("front_shiny_female")
     val frontShinyFemale: String?
-
 )
 
+@Serializable
 data class PokemonAbility(
-    val isHidden: Boolean,
+    @SerialName("is_hidden")
+    val isHidden: Boolean?,
     val slot: Int,
     val ability: NamedApiResource
 )
 
+@Serializable
 data class PokemonHeldItem(
     val item: NamedApiResource,
+    @SerialName("version_details")
     val versionDetails: List<PokemonHeldItemVersion>
 )
 
+@Serializable
 data class PokemonHeldItemVersion(
     val version: NamedApiResource,
     val rarity: Int
 )
 
+@Serializable
 data class PokemonMove(
     val move: NamedApiResource,
+    @SerialName("version_group_details")
     val versionGroupDetails: List<PokemonMoveVersion>
 )
 
+@Serializable
 data class PokemonMoveVersion(
+    @SerialName("move_learn_method")
     val moveLearnMethod: NamedApiResource,
+    @SerialName("version_group")
     val versionGroup: NamedApiResource,
+    @SerialName("level_learned_at")
     val levelLearnedAt: Int
 )
 
+@Serializable
 data class PokemonStat(
     val stat: NamedApiResource,
     val effort: Int,
+    @SerialName("base_stat")
     val baseStat: Int
 )
 
+@Serializable
 data class PokemonType(
     val slot: Int,
     val type: NamedApiResource

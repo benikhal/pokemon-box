@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.khalidb91.pokemonbox"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -68,6 +68,13 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:2.3.5")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
+
+
+    implementation(libs.androidx.paging.common.ktx)
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
 
 
     testImplementation(libs.junit)

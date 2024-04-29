@@ -1,6 +1,7 @@
 package com.khalidb91.pokemonbox.data.network
 
 import com.khalidb91.pokemonbox.data.model.NamedApiResourceList
+import com.khalidb91.pokemonbox.data.model.Pokemon
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 
@@ -15,29 +16,10 @@ class PokemonApi(private val config: ClientConfig) : PokeApi {
             .body<NamedApiResourceList>()
     }
 
-    private inline fun <T> safeApiCall(apiCall: () -> T): ApiOperation<T> {
-        return try {
-            ApiOperation.Success(data = apiCall())
-        } catch (e: Exception) {
-            ApiOperation.Failure(e)
-        }
-    }
-
-}
-
-sealed interface ApiOperation<T> {
-
-    data class Success<T>(val data: T) : ApiOperation<T>
-    data class Failure<T>(val exception: Exception) : ApiOperation<T>
-
-    fun onSuccess(block: (T) -> Unit): ApiOperation<T> {
-        if (this is Success) block(data)
-        return this
-    }
-
-    fun onFailure(block: (Exception) -> Unit): ApiOperation<T> {
-        if (this is Failure) block(exception)
-        return this
+    override suspend fun getPokemonDetail(name: String, ): Pokemon {
+        return config.ktorHttpClient
+            .get("${config.baseUrl}pokemon/$name")
+            .body<Pokemon>()
     }
 
 }

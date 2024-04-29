@@ -1,51 +1,57 @@
 package com.khalidb91.pokemonbox.presentation.ui.screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.khalidb91.pokemonbox.data.network.ClientConfig
 import com.khalidb91.pokemonbox.data.network.PokemonApi
-import com.khalidb91.pokemonbox.domain.model.Pokemon
+import com.khalidb91.pokemonbox.data.paging.PokemonPagingSource
 import com.khalidb91.pokemonbox.domain.repository.PokemonRepository
 import com.khalidb91.pokemonbox.domain.repository.PokemonRepositoryImpl
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainViewModel : ViewModel() {
 
     private val pokemonApi = PokemonApi(ClientConfig())
-    private val pokemonRepository: PokemonRepository = PokemonRepositoryImpl(pokemonApi = pokemonApi)
+    private val pokemonRepository: PokemonRepository =
+        PokemonRepositoryImpl(pokemonApi = pokemonApi)
 
-    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    private val _searchText = MutableStateFlow("")
+    val searchText = this._searchText.asStateFlow().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = "",
+    )
 
-    private val _searchText: MutableStateFlow<String> = MutableStateFlow("")
-    val searchText: StateFlow<String> = _searchText.asStateFlow()
-
-    private val _pokemonList: MutableStateFlow<List<Pokemon>> = MutableStateFlow(listOf())
-    val pokemonList: StateFlow<List<Pokemon>> = _pokemonList.asStateFlow()
-
-    fun onSearchTextChange(query: String) {
-
-        _searchText.value = query
-
-        viewModelScope.launch(Dispatchers.IO) {
-
-            _isLoading.value = true
-
-            try {
-                val result: List<Pokemon> = pokemonRepository.getPokemonList(0, 20)
-                _pokemonList.value = result
-            } catch (e: Exception) {
-                Log.e("", e.message, e)
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val productsSearchResults = searchText.debounce(300.milliseconds).flatMapLatest { query ->
+        Pager(
+            config = PagingConfig(
+                pageSize = PokemonPagingSource.ITEMS_PER_PAGE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                PokemonPagingSource(
+                    pokemonRepository = pokemonRepository,
+                    search = query
+                )
             }
+        ).flow.cachedIn(viewModelScope)
+    }
 
-            _isLoading.value = false
 
-        }
+    fun setSearch(query: String) {
+        this._searchText.value = query
     }
 
 }

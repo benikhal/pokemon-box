@@ -1,5 +1,8 @@
 package com.khalidb91.pokemonbox.data.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 data class Language(
     val id: Int,
     val name: String,
@@ -59,7 +62,9 @@ data class VersionEncounterDetail(
     val encounterDetails: List<Encounter>
 )
 
+@Serializable
 data class VersionGameIndex(
+    @SerialName("game_index")
     val gameIndex: Int,
     val version: NamedApiResource
 )

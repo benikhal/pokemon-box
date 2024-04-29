@@ -93,13 +93,13 @@ fun PokemonItem(
             Spacer(modifier = Modifier.height(4.dp))
 
             FlowRow(horizontalArrangement = Arrangement.Absolute.spacedBy(8.dp)) {
-                pokemon.types.forEach { ChipItem(it) }
+                pokemon.types?.forEach { ChipItem(it) }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = pokemon.description.capitalize(Locale.current),
+                text = pokemon.description.orEmpty().capitalize(Locale.current),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.secondary,
                 maxLines = 2,

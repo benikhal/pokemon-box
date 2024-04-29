@@ -7,14 +7,24 @@ class PokemonRepositoryImpl(
     private val pokemonApi: PokemonApi
 ) : PokemonRepository {
 
-    override suspend fun getPokemonList(
-        offset: Int,
-        limit: Int
-    ): List<Pokemon> {
-        return pokemonApi.getPokemonList(offset = offset, limit = limit).results.map {
-            val imageUrlIndex = it.url.split("/").last { token -> token != "" }
-            Pokemon(name = it.name, description = "Dopo la nascita, per un periodo di tempo cresce assorbendo i nutrienti stipati nel bulbo sul dorso.", image = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${imageUrlIndex}.png", types = listOf("Normal", "Fire", "water"))
+    override suspend fun getPokemonList(offset: Int, limit: Int, search: String?): List<Pokemon> {
+
+        val results = pokemonApi.getPokemonList(offset = offset, limit = limit).results
+
+        val filteredResults = if (search.isNullOrBlank().not()) {
+            results.filter { it.name.contains(search!!, ignoreCase = true) }
+        } else {
+            results
         }
+
+        return filteredResults.map { pokemon ->
+            val detail = pokemonApi.getPokemonDetail(pokemon.name)
+            Pokemon(
+                name = detail.name,
+                image = detail.sprites.frontDefault,
+                types = detail.types.map { it.type.name })
+        }
+
     }
 
 }

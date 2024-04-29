@@ -17,8 +17,6 @@ import kotlinx.serialization.json.Json
 
 class ClientConfig {
 
-    val TIME_OUT = 60_000
-
     val baseUrl = "https://pokeapi.co/api/v2/"
 
     val ktorHttpClient = HttpClient {
@@ -56,6 +54,10 @@ class ClientConfig {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
 
+    }
+
+    companion object {
+        const val TIME_OUT = 60_000
     }
 
 }
