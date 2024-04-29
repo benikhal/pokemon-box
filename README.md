@@ -10,7 +10,6 @@ PokemonBox is a Kotlin Android application providing access to a database of pok
 - [Kotlin](https://kotlinlang.org/) based, [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) for asynchronous.
 - [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization): Kotlin multiplatform / multi-format serialization.
 - [Ktor](https://github.com/ktorio/ktor): for making network requests.
-- [SqlDelight](https://github.com/cashapp/sqldelight): for caching data.
 - [Koin](https://github.com/InsertKoinIO/koin): as dependency injection framework.
 - [Material 3](https://m3.material.io/components): Material 3 components.
 
